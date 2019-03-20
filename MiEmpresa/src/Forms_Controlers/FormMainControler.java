@@ -23,6 +23,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -46,8 +47,7 @@ public class FormMainControler implements Initializable {
 	protected ObservableList<TableColumn<?,?>> coleccionTabs;
 	protected ArrayList<HashMap<String, Integer>> datosDelGrafico;
 	protected static String comunidad = "";
-	private Boolean esNuevoRegistro;
-	private Boolean editando;
+	private Boolean esNuevoRegistro, editando, esNuevoProducto, editandoProducto;
 	private int tabIndex = 0;
 	
 	
@@ -157,14 +157,26 @@ public class FormMainControler implements Initializable {
     private Accordion PRO_Accordion;
     @FXML
     private TitledPane PANE_ListadoProductos;
+    @FXML
+    private Label TXT_IdProducto;
+    @FXML
+    private TextField TXT_Producto;
+
 
     
     @FXML
     void contextualModificarCliente(ActionEvent event) {
-		CTL_Accordion.setExpandedPane(PANE_FichaCliente);
-		pasarDatosDeTableAFicha();
-		esNuevoRegistro = false;
-		editando=true;
+		if(TBL_Clientes.isFocused()) {
+			CTL_Accordion.setExpandedPane(PANE_FichaCliente);
+			pasarDatosDeTableAFicha();
+			esNuevoRegistro = false;
+			editando=true;
+		}else if(TBL_Productos.isFocused()) {
+			PRO_Accordion.setExpandedPane(PANE_FichaProductos);
+			pasarDatosDeTableAFichaProductos();
+			esNuevoProducto = false;
+			editandoProducto=true;
+		}
     }
 
     @FXML
@@ -173,9 +185,17 @@ public class FormMainControler implements Initializable {
     }
     
     @FXML
-    void openFrmNewClient(ActionEvent event) throws Exception {
+    void openFrmNewClient(ActionEvent event)  {
+    	TAB_ControlTabulador.getSelectionModel().select(0);    	
     	CTL_Accordion.setExpandedPane(PANE_FichaCliente);
     	esNuevoRegistro = true;
+    }
+    
+    @FXML
+    void openFrmNewProduct(ActionEvent event)  {
+    	TAB_ControlTabulador.getSelectionModel().select(1);
+    	PRO_Accordion.setExpandedPane(PANE_FichaProductos);
+    	esNuevoProducto = true;
     }
     
     @FXML
@@ -186,8 +206,8 @@ public class FormMainControler implements Initializable {
     
     public FormMainControler() {
     	super();
-    	esNuevoRegistro=true;
-    	editando=false;
+    	esNuevoRegistro=esNuevoProducto=true;
+    	editando=editandoProducto=false;
     	sqlClientes= new OperacionesSQLClientes();
     	sqlProductos = new OperacionesSQLProductos();
     	graficoCircular = new ArrayList<ControladorPieChart>();
@@ -196,8 +216,6 @@ public class FormMainControler implements Initializable {
     	sqlProductos.seleccionarProductos();  // recuperar productos de la bd al array
     	datosDelGrafico.add(sqlClientes.agruparComunidades());
     	datosDelGrafico.add(sqlProductos.contarStockProductos());
-    	
-    	
     }
 
     @Override
@@ -209,6 +227,7 @@ public class FormMainControler implements Initializable {
     	CTL_Accordion.setExpandedPane(PANE_ListadoGeneral);		
     	PRO_Accordion.setExpandedPane(PANE_ListadoProductos);
 		TBL_Clientes.setContextMenu(CMNU_MenuContextualCliente);
+		TBL_Productos.setContextMenu(CMNU_MenuContextualCliente);
 		graficoCircular.add(new ControladorPieChart("Clientes por Comunidades", sqlClientes.agruparComunidades(), charClientes, true));
 		graficoCircular.add(new ControladorPieChart("Stock Productos", sqlProductos.contarStockProductos(), charClientes, false));
 		
@@ -271,7 +290,7 @@ public class FormMainControler implements Initializable {
 		COL_StockProducto.setCellValueFactory(new  PropertyValueFactory<Product,Integer>("stock"));
 		
 	}
-	public void pasarDatosDeTableAFicha() {
+	private void pasarDatosDeTableAFicha() {
 		Client clienteSeleccionado = TBL_Clientes.getSelectionModel().getSelectedItem();
 		
 		TXT_IdCliente.setText(clienteSeleccionado.getIdCliente()+"");
@@ -281,6 +300,15 @@ public class FormMainControler implements Initializable {
 		CMB_ComunidadCliente.setValue(clienteSeleccionado.getComunidad());
 	}
 	
+	private void pasarDatosDeTableAFichaProductos() {
+		Product productoSeleccionado = TBL_Productos.getSelectionModel().getSelectedItem();
+		
+		TXT_IdProducto.setText(productoSeleccionado.getIdProducto()+"");
+		TXT_Producto.setText(productoSeleccionado.getProducto());
+		TXT_Descripcion.setText(productoSeleccionado.getDescripcion());
+		TXT_Stock.setText(productoSeleccionado.getStock()+"");
+		
+	}
 	
 	/*************************************************************
 	*** Método para agrupar todos los eventos del formulario *****
@@ -303,6 +331,19 @@ public class FormMainControler implements Initializable {
 	    	editando=false;
 
 		});
+		//Evento boton guardar producto
+		BTN_GrabarProducto.setOnAction((ActionEvent e) -> {
+			if(esNuevoProducto)
+				sqlProductos.newProduct(TXT_Producto.getText(), TXT_Descripcion.getText(), Integer.parseInt(TXT_Stock.getText()));
+			else
+				sqlProductos.updateProduct(Integer.parseInt(TXT_IdProducto.getText()), TXT_Producto.getText(), TXT_Descripcion.getText(), Integer.parseInt(TXT_Stock.getText()));
+			llenarTabViewProductos();
+			refrescarGrafico(tabIndex);
+			PRO_Accordion.setExpandedPane(PANE_ListadoProductos);
+			borrarCamposFormularioProducto();
+			editandoProducto=false;
+		});
+		
 		//Evento del chequer para quitar filtro de la tabla de datos TableView
 		CHK_Filtro.setOnMouseClicked(( MouseEvent mouseEvent)->{
 			if(!CHK_Filtro.isSelected()) {
@@ -374,6 +415,13 @@ public class FormMainControler implements Initializable {
 		this.TXT_ApellidosCliente.setText("");
 		this.DTA_FechaAltaCliente.setValue(LocalDate.now());
 		this.CMB_ComunidadCliente.getSelectionModel().selectFirst();
+	}	
+	
+	private void borrarCamposFormularioProducto() {
+		this.TXT_IdProducto.setText("");
+		this.TXT_Producto.setText("");
+		this.TXT_Descripcion.setText("");
+		this.TXT_Stock.setText("");
 	}	
 }
 

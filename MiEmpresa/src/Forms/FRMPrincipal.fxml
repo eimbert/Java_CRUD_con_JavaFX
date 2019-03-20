@@ -28,7 +28,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Productos">
                   <items>
-                    <MenuItem fx:id="MNUNuevoProducto" mnemonicParsing="false" text="Nuevo producto" />
+                    <MenuItem fx:id="MNUNuevoProducto" mnemonicParsing="false" onAction="#openFrmNewProduct" text="Nuevo producto" />
                         <MenuItem fx:id="MNUBuscarProducto" mnemonicParsing="false" text="Buscar producto" />
                         <MenuItem fx:id="MNUModificarProducto" mnemonicParsing="false" text="Modificar producto" />
                         <MenuItem fx:id="MNUBorrarProducto" mnemonicParsing="false" text="Borrar producto" />
@@ -105,15 +105,15 @@
                                              <contextMenu>
                                                 <ContextMenu fx:id="CMNU_MenuContextualCliente">
                                                   <items>
-                                                      <MenuItem fx:id="CMNU_ModificarCliente" mnemonicParsing="false" onAction="#contextualModificarCliente" text="Modificar cliente" />
-                                                    <MenuItem fx:id="CMNU_BorrarCliente" mnemonicParsing="false" onAction="#contextualBorrarCliente" text="Borrar cliente" />
+                                                      <MenuItem fx:id="CMNU_ModificarCliente" mnemonicParsing="false" onAction="#contextualModificarCliente" text="Modificar registro" />
+                                                    <MenuItem fx:id="CMNU_BorrarCliente" mnemonicParsing="false" onAction="#contextualBorrarCliente" text="Borrar registro" />
                                                   </items>
                                                 </ContextMenu>
                                              </contextMenu>
                                           </TableView>
                                        </content>
                                     </TitledPane>
-                                  <TitledPane fx:id="PANE_FichaCliente" animated="false" text="Ficha Cliente">
+                                  <TitledPane fx:id="PANE_FichaCliente" text="Ficha Cliente">
                                        <content>
                                           <GridPane>
                                             <columnConstraints>
@@ -153,7 +153,7 @@
                            <content>
                               <Accordion fx:id="PRO_Accordion">
                                 <panes>
-                                  <TitledPane fx:id="PANE_ListadoProductos" animated="false" text="Listado Productos">
+                                  <TitledPane fx:id="PANE_ListadoProductos" text="Listado Productos">
                                        <content>
                                           <TableView fx:id="TBL_Productos" prefHeight="200.0" prefWidth="200.0">
                                             <columns>
@@ -165,7 +165,7 @@
                                           </TableView>
                                        </content>
                                     </TitledPane>
-                                  <TitledPane fx:id="PANE_FichaProductos" animated="false" text="Ficha Productos">
+                                  <TitledPane fx:id="PANE_FichaProductos" text="Ficha Productos">
                                        <content>
                                           <GridPane>
                                             <columnConstraints>
@@ -187,6 +187,7 @@
                                                 <TextField fx:id="TXT_Stock" maxWidth="25.0" minWidth="30.0" prefHeight="25.0" prefWidth="69.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label text="Stock:" GridPane.rowIndex="2" />
                                                 <Button fx:id="BTN_GrabarProducto" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" prefHeight="18.0" prefWidth="117.0" text="Grabar Cambios" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Label fx:id="TXT_IdProducto" text="Label" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                              </children>
                                           </GridPane>
                                        </content>
