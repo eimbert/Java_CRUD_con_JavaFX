@@ -18,6 +18,7 @@ public abstract class CustomerOperations {
 				s.setFechaAlta(fecha);
 				s.setComunidad(comunidad);
 				s.setIsModified(true);
+				break;
 			}
 		}
 	}

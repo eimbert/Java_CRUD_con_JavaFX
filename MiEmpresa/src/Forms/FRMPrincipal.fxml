@@ -151,7 +151,7 @@
                         </Tab>
                       <Tab fx:id="TAB_Productos" text="Gestión Productos">
                            <content>
-                              <Accordion>
+                              <Accordion fx:id="PRO_Accordion">
                                 <panes>
                                   <TitledPane fx:id="PANE_ListadoProductos" animated="false" text="Listado Productos">
                                        <content>

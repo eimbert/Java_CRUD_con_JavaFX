@@ -15,13 +15,13 @@ public class ControladorPieChart {
 	private ObservableList<PieChart.Data> pieChartData;
 	private String titulo;
 	private String datoSectorSeleccionado;
+	private Boolean isSelectionPosible;
 	
-	
-	public ControladorPieChart(String titulo, HashMap<String, Integer> datos, PieChart objeto) {
+	public ControladorPieChart(String titulo, HashMap<String, Integer> datos, PieChart objeto, Boolean isSelectionPosible) {
 		this.titulo=titulo;
 		streamDatos = datos;
 		objetoPieChart = objeto;
-		
+		this.isSelectionPosible = isSelectionPosible;
 		objetoPieChart.setTitle(titulo);
 		objetoPieChart.setData(pieChartData);
 		pieChartData = FXCollections.observableArrayList();
@@ -56,16 +56,18 @@ public class ControladorPieChart {
 	}
 	
 	public void setMouseCursor() {
-		for (final PieChart.Data data: objetoPieChart.getData()) {
-		    data.getNode().setCursor(Cursor.HAND);
-		}
+		if(isSelectionPosible)
+			for (final PieChart.Data data: objetoPieChart.getData()) {
+				data.getNode().setCursor(Cursor.HAND);
+			}
 	}
 	public void setLisener() {
-		for (final PieChart.Data data: objetoPieChart.getData()) {
-		    data.getNode().setOnMouseClicked((MouseEvent event)->{
-		    	datoSectorSeleccionado = data.getName();	
-		    });
-		}
+		if(isSelectionPosible)
+			for (final PieChart.Data data: objetoPieChart.getData()) {
+				data.getNode().setOnMouseClicked((MouseEvent event)->{
+					datoSectorSeleccionado = data.getName();	
+				});
+			}
 	}
 	
 	public ObservableList<PieChart.Data> getData(){

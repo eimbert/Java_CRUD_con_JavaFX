@@ -153,6 +153,11 @@ public class FormMainControler implements Initializable {
     private TableColumn<Product, Integer> COL_StockProducto;
     @FXML
     private TableView<Product> TBL_Productos;
+    @FXML
+    private Accordion PRO_Accordion;
+    @FXML
+    private TitledPane PANE_ListadoProductos;
+
     
     @FXML
     void contextualModificarCliente(ActionEvent event) {
@@ -202,14 +207,15 @@ public class FormMainControler implements Initializable {
     			"País Vasco", "Principado de Asturias", "Región de Murcia", "La Rioja", "Ceuta", "Melilla");
     	
     	CTL_Accordion.setExpandedPane(PANE_ListadoGeneral);		
+    	PRO_Accordion.setExpandedPane(PANE_ListadoProductos);
 		TBL_Clientes.setContextMenu(CMNU_MenuContextualCliente);
-		graficoCircular.add(new ControladorPieChart("Clientes por Comunidades", sqlClientes.agruparComunidades(), charClientes));
-		graficoCircular.add(new ControladorPieChart("Stock Productos", sqlProductos.contarStockProductos(), charClientes));
+		graficoCircular.add(new ControladorPieChart("Clientes por Comunidades", sqlClientes.agruparComunidades(), charClientes, true));
+		graficoCircular.add(new ControladorPieChart("Stock Productos", sqlProductos.contarStockProductos(), charClientes, false));
 		
 		refrescarGrafico(tabIndex);	
 		llenarTabViewClientes();
 		llenarTabViewProductos();
-		activarEventosDelFormulario();
+		activarEventosDelFormularioClientes();
 		borrarCamposFormularioCliente();	
 		
 		//coleccionTabs.addAll(TBL_Clientes.getColumns());
@@ -279,7 +285,8 @@ public class FormMainControler implements Initializable {
 	/*************************************************************
 	*** Método para agrupar todos los eventos del formulario *****
 	**************************************************************/
-	private void activarEventosDelFormulario() {
+	//Eventos de CLientes ****************************************
+	private void activarEventosDelFormularioClientes() {
 		//Evento del boton guardarCliente
 		BTN_GuardarCliente.setOnAction((ActionEvent e) ->{
 	    	if(esNuevoRegistro)
@@ -305,6 +312,7 @@ public class FormMainControler implements Initializable {
 	            CHK_Filtro.setVisible(false);
 			}              
 		});
+		
 		//Evento cuando se hace doble click en la tabla de datos clientes TableView
 		TBL_Clientes.setOnMouseClicked(( MouseEvent mouseEvent) ->{
 			if(mouseEvent.getClickCount()==2) {
@@ -350,10 +358,12 @@ public class FormMainControler implements Initializable {
 		
 		charClientes.setOnMouseClicked((MouseEvent event)->{
 			comunidad = graficoCircular.get(tabIndex).getDatoSectorSeleccionado();
-			CHK_Filtro.setSelected(true);
-	    	CHK_Filtro.setText("Mostrando clientes de " + comunidad + " desmarca para general");
-	    	CHK_Filtro.setVisible(true);
-	    	llenarTabViewClientes();
+			if(comunidad!=null) {
+				CHK_Filtro.setSelected(true);
+				CHK_Filtro.setText("Mostrando clientes de " + comunidad + " desmarca para general");
+				CHK_Filtro.setVisible(true);
+				llenarTabViewClientes();
+			}
 		});
    						
 	}
@@ -365,33 +375,5 @@ public class FormMainControler implements Initializable {
 		this.DTA_FechaAltaCliente.setValue(LocalDate.now());
 		this.CMB_ComunidadCliente.getSelectionModel().selectFirst();
 	}	
-	
-	//Activa los eventos del gráfico, se pone por separado para poderlo llamar en cada cambio de datos
-//	private void activarEventosDelGrafico() {
-		//Poner el cursor de mano cuando se entra en cada porción del gráfico,
-		//no es un evento, es una propiedad del nodo
-		//for (final PieChart.Data data: charClientes.getData()) {
-		//    data.getNode().setCursor(Cursor.HAND);
-		//}
-		
-		//Evento de cada porción del gráfico
-		/*for (final PieChart.Data data: charClientes.getData()) {
-		    data.getNode().addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-		    	@Override public void handle(MouseEvent e) {
-		    		comunidad = data.getName();
-		    		CHK_Filtro.setSelected(true);
-		            CHK_Filtro.setText("Mostrando clientes de " + comunidad + " desmarca para general");
-		            CHK_Filtro.setVisible(true);
-		            //mostrar valores de la region seleccionada.
-		            try {
-		            	llenarTabView();
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-		    	}
-		    });
-		}*/	
-//	}
 }
 
