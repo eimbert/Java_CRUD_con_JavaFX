@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="639.0" prefWidth="1141.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Forms_Controlers.FormMainControler">
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="Clientes">
+                  <items>
+                    <MenuItem fx:id="MNUNuevoCliente" mnemonicParsing="false" onAction="#openFrmNewClient" text="Nuevo cliente" />
+                        <MenuItem fx:id="MNUBuscarCliente" mnemonicParsing="false" text="Buscar cliente" />
+                        <MenuItem fx:id="MNUModificarCliente" mnemonicParsing="false" text="Modificar datos cliente" />
+                        <MenuItem fx:id="MNUBorrarCliente" mnemonicParsing="false" text="Borrar cliente" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="MNU_GrabarClientes" mnemonicParsing="false" onAction="#saveChangesClients" text="Grabar cambios en clientes" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Productos">
+                  <items>
+                    <MenuItem fx:id="MNUNuevoProducto" mnemonicParsing="false" text="Nuevo producto" />
+                        <MenuItem fx:id="MNUBuscarProducto" mnemonicParsing="false" text="Buscar producto" />
+                        <MenuItem fx:id="MNUModificarProducto" mnemonicParsing="false" text="Modificar producto" />
+                        <MenuItem fx:id="MNUBorrarProducto" mnemonicParsing="false" text="Borrar producto" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Pedidos">
+                  <items>
+                    <MenuItem fx:id="MNUNuevoPedido" mnemonicParsing="false" text="Nuevo pedido" />
+                        <MenuItem fx:id="MNUBuscarPedido" mnemonicParsing="false" text="Buscar pedido" />
+                        <MenuItem fx:id="MNUBorrarPedido" mnemonicParsing="false" text="Borrar pedido" />
+                        <MenuItem fx:id="MNUModificarPedido" mnemonicParsing="false" text="Modificar pedido" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="Listados">
+                    <items>
+                      <MenuItem fx:id="MNUListadoGeneralClientes" mnemonicParsing="false" text="Listado general clientes" />
+                        <MenuItem fx:id="MNUListadoGeneralProductos" mnemonicParsing="false" text="Listado general productos" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="MNUListadoPedidos" mnemonicParsing="false" text="Listado pedidos por cliente" />
+                    </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <center>
+            <GridPane prefHeight="614.0" prefWidth="769.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="687.0" minWidth="10.0" prefWidth="687.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="253.0" minWidth="10.0" prefWidth="14.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="436.0" minWidth="10.0" prefWidth="436.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="270.0" minHeight="3.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="270.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="270.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="579.0" minHeight="10.0" prefHeight="579.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <PieChart fx:id="charClientes" prefHeight="495.0" prefWidth="400.0" title="Clientes por comunidad" GridPane.rowIndex="3">
+                     <cursor>
+                        <Cursor fx:constant="DEFAULT" />
+                     </cursor></PieChart>
+                  <HBox alignment="CENTER" prefHeight="23.0" prefWidth="476.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <children>
+                        <CheckBox fx:id="CHK_Filtro" alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxHeight="20.0" mnemonicParsing="false" prefHeight="20.0" text="Quitar filtro de la tabla" textAlignment="RIGHT" visible="false" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                     <children>
+                        <Label text="Filtrar por nombre:" />
+                        <TextField fx:id="TXT_FiltroCliente" prefHeight="25.0" prefWidth="165.0">
+                           <padding>
+                              <Insets bottom="2.0" left="3.0" top="2.0" />
+                           </padding>
+                        </TextField>
+                     </children>
+                  </HBox>
+                  <TabPane fx:id="TAB_ControlTabulador" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                    <tabs>
+                      <Tab fx:id="TAB_Clientes" text="Gestión Clientes">
+                           <content>
+                              <Accordion fx:id="CTL_Accordion" prefHeight="579.0" prefWidth="292.0">
+                                <panes>
+                                  <TitledPane fx:id="PANE_ListadoGeneral" text="Listado Clientes">
+                                       <content>
+                                          <TableView fx:id="TBL_Clientes" prefHeight="614.0" prefWidth="421.0">
+                                            <columns>
+                                              <TableColumn fx:id="TBL_IdCliente" editable="false" prefWidth="75.0" text="Id Cliente" visible="false" />
+                                              <TableColumn fx:id="TBL_Nombre" prefWidth="75.0" resizable="false" text="Nombre" />
+                                                <TableColumn fx:id="TBL_Apellidos" prefWidth="109.0" resizable="false" text="Apellidos" />
+                                                <TableColumn fx:id="TBL_FechaAlta" prefWidth="106.0" resizable="false" text="Fecha de alta" />
+                                                <TableColumn fx:id="TBL_Comunidad" prefWidth="133.0" resizable="false" text="Comunidad" />
+                                            </columns>
+                                             <contextMenu>
+                                                <ContextMenu fx:id="CMNU_MenuContextualCliente">
+                                                  <items>
+                                                      <MenuItem fx:id="CMNU_ModificarCliente" mnemonicParsing="false" onAction="#contextualModificarCliente" text="Modificar cliente" />
+                                                    <MenuItem fx:id="CMNU_BorrarCliente" mnemonicParsing="false" onAction="#contextualBorrarCliente" text="Borrar cliente" />
+                                                  </items>
+                                                </ContextMenu>
+                                             </contextMenu>
+                                          </TableView>
+                                       </content>
+                                    </TitledPane>
+                                  <TitledPane fx:id="PANE_FichaCliente" animated="false" text="Ficha Cliente">
+                                       <content>
+                                          <GridPane>
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.0" minWidth="10.0" prefWidth="131.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="315.0" minWidth="10.0" prefWidth="283.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints maxHeight="40.0" minHeight="7.0" prefHeight="43.0" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="423.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="423.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="423.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="423.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="423.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label text="Nombre:" GridPane.rowIndex="1" />
+                                                <TextField fx:id="TXT_NombreCliente" maxHeight="20.0" prefHeight="20.0" prefWidth="234.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="TXT_ApellidosCliente" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label text="Apellidos:" GridPane.rowIndex="2" />
+                                                <Label text="Fecha de alta:" GridPane.rowIndex="3" />
+                                                <DatePicker fx:id="DTA_FechaAltaCliente" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Label text="Comunidad autónoma:" GridPane.rowIndex="4" />
+                                                <ComboBox fx:id="CMB_ComunidadCliente" prefHeight="25.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Button fx:id="BTN_GuardarCliente" mnemonicParsing="false" prefHeight="25.0" prefWidth="116.0" text="Guardar Datos" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <TextField fx:id="TXT_IdCliente" visible="false" GridPane.columnIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                       </content>
+                                    </TitledPane>
+                                </panes>
+                              </Accordion>
+                           </content>
+                        </Tab>
+                      <Tab fx:id="TAB_Productos" text="Gestión Productos">
+                           <content>
+                              <Accordion>
+                                <panes>
+                                  <TitledPane fx:id="PANE_ListadoProductos" animated="false" text="Listado Productos">
+                                       <content>
+                                          <TableView fx:id="TBL_Productos" prefHeight="200.0" prefWidth="200.0">
+                                            <columns>
+                                              <TableColumn fx:id="COL_IdProducto" prefWidth="75.0" text="IdProducto" visible="false" />
+                                              <TableColumn fx:id="COL_Producto" prefWidth="95.0" text="Producto" />
+                                                <TableColumn fx:id="COL_DescripcionProducto" prefWidth="277.0" text="Descripción" />
+                                                <TableColumn fx:id="COL_StockProducto" minWidth="6.0" prefWidth="62.0" text="Stock" />
+                                            </columns>
+                                          </TableView>
+                                       </content>
+                                    </TitledPane>
+                                  <TitledPane fx:id="PANE_FichaProductos" animated="false" text="Ficha Productos">
+                                       <content>
+                                          <GridPane>
+                                            <columnConstraints>
+                                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="197.0" minWidth="10.0" prefWidth="120.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="294.0" minWidth="10.0" prefWidth="294.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints maxHeight="113.0" minHeight="10.0" prefHeight="43.0" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="158.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="334.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="329.0" minHeight="10.0" prefHeight="54.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="329.0" minHeight="10.0" prefHeight="307.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label text="Producto:" />
+                                                <Label text="Descripción:" GridPane.rowIndex="1" />
+                                                <TextField fx:id="TXT_Producto" maxWidth="200.0" prefHeight="25.0" prefWidth="203.0" GridPane.columnIndex="1" />
+                                                <TextField fx:id="TXT_Descripcion" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="TXT_Stock" maxWidth="25.0" minWidth="30.0" prefHeight="25.0" prefWidth="69.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label text="Stock:" GridPane.rowIndex="2" />
+                                                <Button fx:id="BTN_GrabarProducto" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" prefHeight="18.0" prefWidth="117.0" text="Grabar Cambios" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                             </children>
+                                          </GridPane>
+                                       </content>
+                                    </TitledPane>
+                                </panes>
+                              </Accordion>
+                           </content></Tab>
+                        <Tab fx:id="TAB_pedidos" text="Gestión Pedidos">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </GridPane>
+         </center>
+         <BorderPane.margin>
+            <Insets left="2.0" right="2.0" />
+         </BorderPane.margin>
+      </BorderPane>
+   </center>
+</BorderPane>
