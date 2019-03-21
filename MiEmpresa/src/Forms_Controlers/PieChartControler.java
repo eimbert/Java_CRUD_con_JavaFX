@@ -9,7 +9,7 @@ import javafx.scene.Cursor;
 import javafx.scene.chart.PieChart;
 import javafx.scene.input.MouseEvent;
 
-public class ControladorPieChart {
+public class PieChartControler {
 	private PieChart objetoPieChart;
 	private HashMap<String, Integer> streamDatos;
 	private ObservableList<PieChart.Data> pieChartData;
@@ -17,7 +17,7 @@ public class ControladorPieChart {
 	private String datoSectorSeleccionado;
 	private Boolean isSelectionPosible;
 	
-	public ControladorPieChart(String titulo, HashMap<String, Integer> datos, PieChart objeto, Boolean isSelectionPosible) {
+	public PieChartControler(String titulo, HashMap<String, Integer> datos, PieChart objeto, Boolean isSelectionPosible) {
 		this.titulo=titulo;
 		streamDatos = datos;
 		objetoPieChart = objeto;
@@ -28,7 +28,7 @@ public class ControladorPieChart {
 		generarDatosGrafico();
 	}
 	
-	public ControladorPieChart(String titulo, PieChart objeto) {
+	public PieChartControler(String titulo, PieChart objeto) {
 		this.titulo=titulo;
 		objetoPieChart = objeto;
 	}
