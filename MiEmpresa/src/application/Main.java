@@ -27,9 +27,7 @@ public class Main extends Application {
 				alert.setHeaderText(null);
 				alert.setContentText("I have a great message for you!");
 
-				alert.showAndWait();
-				//sqlClientes.grabarDatos();
-				//sqlClientes.grabarModificacionesClientes();
+				alert.showAndWait();			
 		    });
 	}
 	

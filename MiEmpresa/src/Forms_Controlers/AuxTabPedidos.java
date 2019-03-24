@@ -31,4 +31,13 @@ public class AuxTabPedidos {
 	public static void borrarFormulario(FormMainControler parentForm) {
 		parentForm.TXT_CantidadPedido.setText("0");
 	}
+	
+	public static Boolean comprbarAntesDePedido(FormMainControler parentForm) {
+		Boolean cantidadPedido = (Integer.parseInt(parentForm.TXT_CantidadPedido.getText()) > 0) &&  Integer.parseInt(parentForm.TXT_CantidadPedido.getText()) <= parentForm.TableView_ProductosPedidos.getSelectionModel().getSelectedItem().getStock();
+		if (cantidadPedido) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 }

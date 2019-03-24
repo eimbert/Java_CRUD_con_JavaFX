@@ -40,7 +40,14 @@ public abstract class ProductsOperations {
 	public void vaciarArray() {
 		if (grabarProductos() == 0 && grabarModificacionesProductos() == 0)
 			productos.clear();
+	}
+	
+	public Product buscarProducto(int idProducto) {
+		for(Product p: productos)
+			if(p.getIdProducto()==idProducto)
+				return p;
 		
+		return null;
 	}
 		
 	public ArrayList<Product> getProductos(){

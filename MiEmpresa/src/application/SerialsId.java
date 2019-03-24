@@ -12,11 +12,11 @@ public class SerialsId {
 		ConnectorSQL db = new ConnectorSQL();
 		int valorId;
 		
-		valorId = db.executeSelectSQL("SELECT MAX(idCliente) AS nextId FROM clientes ORDER BY idCliente DESC");
-		if(valorId!= ErrCode.QUERY_ERROR) newIdCliente = obtenerId(db.getRs());
+		//valorId = db.executeSelectSQL("SELECT MAX(idCliente) AS nextId FROM clientes ORDER BY idCliente DESC");
+		//if(valorId!= ErrCode.QUERY_ERROR) newIdCliente = obtenerId(db.getRs());
 		
-		valorId = db.executeSelectSQL("SELECT MAX(idProducto) AS nextId FROM productos ORDER BY idProducto DESC");
-		if(valorId!= ErrCode.QUERY_ERROR) newIdProductos = obtenerId(db.getRs());
+		//valorId = db.executeSelectSQL("SELECT MAX(idProducto) AS nextId FROM productos ORDER BY idProducto DESC");
+		//if(valorId!= ErrCode.QUERY_ERROR) newIdProductos = obtenerId(db.getRs());
 			
 		valorId = db.executeSelectSQL("SELECT MAX(idPedido) AS nextId FROM pedidos ORDER BY idPedido DESC");
 		if(valorId!= ErrCode.QUERY_ERROR) newIdPedido = obtenerId(db.getRs());

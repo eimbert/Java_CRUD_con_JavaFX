@@ -4,12 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class OperacionesSQLOrders extends OrdersOperations {
-
-	
 	
 	public OperacionesSQLOrders() {
 		super();
-		
 	}
 	
 	@Override

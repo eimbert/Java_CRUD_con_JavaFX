@@ -247,6 +247,19 @@
                         </Tab>
                     </tabs>
                   </TabPane>
+                  <TableView fx:id="TableView_ListadoPedidos" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+                    <columns>
+                      <TableColumn fx:id="IdPedido_ListadoPedidos" prefWidth="63.0" text="IdPedido" />
+                      <TableColumn fx:id="nombre_ListadoPedidos" prefWidth="96.0" text="Nombre" />
+                        <TableColumn fx:id="apellidos_ListadoPedidos" prefWidth="108.0" text="Apellidos" />
+                        <TableColumn fx:id="producto_ListadoPedidos" prefWidth="93.0" text="Producto" />
+                        <TableColumn fx:id="descripcion_ListadoPedidos" prefWidth="252.0" text="Descripción" />
+                        <TableColumn fx:id="cantidad_ListadoPedidos" prefWidth="73.0" text="Cantidad" />
+                    </columns>
+                     <effect>
+                        <SepiaTone />
+                     </effect>
+                  </TableView>
                </children>
             </GridPane>
          </center>

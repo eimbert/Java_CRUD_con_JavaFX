@@ -1,5 +1,7 @@
 package application;
 
+import java.util.ArrayList;
+
 public class Order {
 	private int idPedido;
 	private int idCliente;
@@ -8,7 +10,6 @@ public class Order {
 	private String fechaPedido;
 	private Boolean isSaved;
 	private Boolean isUpdated;
-	
 	
 	public Order(int idCliente, int idProducto, int cantidad) {
 		super();

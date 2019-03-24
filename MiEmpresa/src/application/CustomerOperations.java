@@ -60,6 +60,14 @@ public abstract class CustomerOperations {
 		return clientes;
 	}
 	
+	public Client buscarCliente(int idCliente) {
+		for(Client c: clientes)
+			if(c.getIdCliente()==idCliente)
+				return c;
+		
+		return null;
+	}
+	
 	public abstract int buscarCliente(String name, String surname);
 	public abstract int grabarDatos();
 	public abstract int borrarCliente(String name, String surname);

@@ -46,13 +46,15 @@ public class PieChartControler {
 		}
 	}
 	
-	public void refresh(HashMap<String, Integer> datos) {
+	public void refresh() {
 		pieChartData.clear();
 		objetoPieChart.setTitle(titulo);
-		streamDatos = datos;
+		//streamDatos = datos;
 		pieChartData = FXCollections.observableArrayList();
 		objetoPieChart.setData(pieChartData);
 		generarDatosGrafico();
+		setMouseCursor();
+		setLisener();
 	}
 	
 	public void setMouseCursor() {
@@ -72,6 +74,11 @@ public class PieChartControler {
 	
 	public ObservableList<PieChart.Data> getData(){
 		return pieChartData;
+	}
+
+	public void setStreamDatos(HashMap<String, Integer> streamDatos) {
+		pieChartData.clear();
+		this.streamDatos = streamDatos;
 	}
 	
 }

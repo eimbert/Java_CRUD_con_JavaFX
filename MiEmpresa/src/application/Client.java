@@ -83,6 +83,10 @@ public class Client {
 	public void setComunidad(String comunidad) {
 		this.comunidad = comunidad;
 	}
+	
+	public Client getClient() {
+		return this;
+	}
 	@Override
 	public String toString() {
 		return "Client [idCliente=" + idCliente + ", nombre=" + nombre + ", apellidos=" + apellidos + ", fechaAlta="

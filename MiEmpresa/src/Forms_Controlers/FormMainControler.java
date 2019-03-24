@@ -44,9 +44,11 @@ import javafx.stage.WindowEvent;
 public class FormMainControler implements Initializable {
 	protected static CustomerOperations sqlClientes; 
 	protected static ProductsOperations sqlProductos;
+	protected static OrdersOperations sqlOrders;
+	protected static ArrayList<OrderTemp> orderTemp;
 	protected ArrayList<PieChartControler> graficoCircular;
 	protected ObservableList<TableColumn<?,?>> coleccionTabs;
-	protected ArrayList<HashMap<String, Integer>> datosDelGrafico;
+	//protected ArrayList<HashMap<String, Integer>> datosDelGrafico;
 	private String comunidad = "";
 	private Boolean esNuevoRegistro, editando, esNuevoProducto, editandoProducto;
 	private int tabIndex = 0;
@@ -183,6 +185,24 @@ public class FormMainControler implements Initializable {
     protected TableColumn<Product, Integer> ColumnStockPedidos;
     @FXML
     protected TableColumn<Client, String> ColumnApellidosPedido;
+    @FXML
+    private Button BTN_NuevoPedido;
+    //************************************************* Controles Tab ListadoPedidos
+    @FXML
+    protected TableColumn<OrderTemp, String> descripcion_ListadoPedidos;
+    @FXML
+    protected TableColumn<OrderTemp, String> producto_ListadoPedidos;
+    @FXML
+    protected TableColumn<OrderTemp, Integer> cantidad_ListadoPedidos;
+    @FXML
+    protected TableColumn<OrderTemp, Integer> IdPedido_ListadoPedidos;
+    @FXML
+    protected TableView<OrderTemp> TableView_ListadoPedidos;
+    @FXML
+    protected TableColumn<OrderTemp, String> nombre_ListadoPedidos;
+    @FXML
+    protected TableColumn<OrderTemp, String> apellidos_ListadoPedidos;
+    
     //************************************************* Controles Generales  
     @FXML
     private PieChart charClientes;
@@ -229,22 +249,24 @@ public class FormMainControler implements Initializable {
     void saveChangesClients(ActionEvent event) {
     	sqlClientes.grabarDatos();
     	sqlClientes.grabarModificacionesClientes();
-    	sqlProductos.grabarProductos();
-    	sqlProductos.grabarModificacionesProductos();
     }
     
     public FormMainControler() {
     	super();
+    	SerialsId.obtenerSerialsId();
     	esNuevoRegistro=esNuevoProducto=true;
     	editando=editandoProducto=false;
     	sqlClientes= new OperacionesSQLClientes();
     	sqlProductos = new OperacionesSQLProductos();
+    	sqlOrders = new OperacionesSQLOrders();
+    	orderTemp = new ArrayList<OrderTemp>();
     	graficoCircular = new ArrayList<PieChartControler>();
-    	datosDelGrafico = new ArrayList<HashMap<String, Integer>>();
+    	//datosDelGrafico = new ArrayList<HashMap<String, Integer>>();
+    	
     	sqlClientes.seleccionarClientes();    	
     	sqlProductos.seleccionarProductos();  // recuperar productos de la bd al array
-    	datosDelGrafico.add(sqlClientes.agruparComunidades());
-    	datosDelGrafico.add(sqlProductos.contarStockProductos());
+    	sqlOrders.seleccionarPedidos();
+    
     }
 
     @Override
@@ -253,6 +275,7 @@ public class FormMainControler implements Initializable {
     			"Comunidad de Madrid", "Comunidad Foral de Navarra", "Comunidad Valenciana", "Extremadura", "Galicia", 
     			"País Vasco", "Principado de Asturias", "Región de Murcia", "La Rioja", "Ceuta", "Melilla");
     	
+    	TableView_ListadoPedidos.setVisible(false);
     	CTL_Accordion.setExpandedPane(PANE_ListadoGeneral);		
     	PRO_Accordion.setExpandedPane(PANE_ListadoProductos);
 		TBL_Clientes.setContextMenu(CMNU_MenuContextualCliente);
@@ -260,28 +283,31 @@ public class FormMainControler implements Initializable {
 		graficoCircular.add(new PieChartControler("Clientes por Comunidades", sqlClientes.agruparComunidades(), charClientes, true));
 		graficoCircular.add(new PieChartControler("Stock Productos", sqlProductos.contarStockProductos(), charClientes, false));
 		
-		refrescarGrafico(tabIndex);	
+		graficoCircular.get(tabIndex).refresh();	
 		
 		AuxTabClient.llenarTabViewClientes(this, sqlClientes.getClientes(), comunidad);
 		AuxTabProduct.llenarTabViewProductos(this, sqlProductos.getProductos());
 		activarEventosDelFormularioClientes();
 		AuxTabClient.borrarCamposFormularioCliente(this);	
 	}
-	
-	public void refrescarGrafico(int ind) {
-		graficoCircular.get(ind).refresh(datosDelGrafico.get(tabIndex));
-		graficoCircular.get(tabIndex).setMouseCursor();
-		graficoCircular.get(tabIndex).setLisener();
-		
-	}
+    
+    public static void grabarCambios() {
+    	sqlClientes.grabarDatos();
+    	sqlClientes.grabarModificacionesClientes();
+    	sqlProductos.grabarProductos();
+    	sqlProductos.grabarModificacionesProductos();
+    	sqlOrders.grabarPedidos();
+    	sqlOrders.grabarModificacionesPedidos();
+    }
 	
 	/**
 	 * ** Método para agrupar todos los eventos del formulario ****
 	 */
 	
-	//Eventos de CLientes ****************************************
 	private void activarEventosDelFormularioClientes() {
-		//Evento del boton guardarCliente
+		/**
+		 *  Evento del boton guardarCliente 
+		 */
 		BTN_GuardarCliente.setOnAction((ActionEvent e) ->{
 	    	if(esNuevoRegistro)
 	    		sqlClientes.newClient(TXT_NombreCliente.getText(), TXT_ApellidosCliente.getText(), DTA_FechaAltaCliente.getValue().toString(), CMB_ComunidadCliente.getValue());
@@ -290,27 +316,30 @@ public class FormMainControler implements Initializable {
 	    		sqlClientes.updateClient(Integer.parseInt(TXT_IdCliente.getText()), TXT_NombreCliente.getText(), TXT_ApellidosCliente.getText(), fecha.toString(), CMB_ComunidadCliente.getValue());
 	    	}
 	    	AuxTabClient.llenarTabViewClientes(this, sqlClientes.getClientes(), comunidad);
-	    	datosDelGrafico.set(tabIndex, sqlClientes.agruparComunidades());
-	    	refrescarGrafico(tabIndex);
+	    	graficoCircular.get(tabIndex).setStreamDatos(sqlClientes.agruparComunidades());
+	    	graficoCircular.get(tabIndex).refresh();
 	    	CTL_Accordion.setExpandedPane(PANE_ListadoGeneral);
 	    	AuxTabClient.borrarCamposFormularioCliente(this);
 	    	editando=false;
 
 		});
-		//Evento boton guardar producto
+		/**
+		 *  Evento boton guardar producto 
+		 */
 		BTN_GrabarProducto.setOnAction((ActionEvent e) -> {
 			if(esNuevoProducto)
 				sqlProductos.newProduct(TXT_Producto.getText(), TXT_Descripcion.getText(), Integer.parseInt(TXT_Stock.getText()));
 			else
 				sqlProductos.updateProduct(Integer.parseInt(TXT_IdProducto.getText()), TXT_Producto.getText(), TXT_Descripcion.getText(), Integer.parseInt(TXT_Stock.getText()));
 			AuxTabProduct.llenarTabViewProductos(this, sqlProductos.getProductos());
-			refrescarGrafico(tabIndex);
+			graficoCircular.get(tabIndex).refresh();
 			PRO_Accordion.setExpandedPane(PANE_ListadoProductos);
 			AuxTabProduct.borrarCamposFormularioProducto(this);
 			editandoProducto=false;
 		});
-		
-		//Evento del chequer para quitar filtro de la tabla de datos TableView
+		/**
+		 *  Evento del chequer para quitar filtro de la tabla de datos TableView 
+		 */
 		CHK_Filtro.setOnMouseClicked(( MouseEvent mouseEvent)->{
 			if(!CHK_Filtro.isSelected()) {
 				comunidad="";
@@ -319,8 +348,9 @@ public class FormMainControler implements Initializable {
 	            CHK_Filtro.setVisible(false);
 			}              
 		});
-		
-		//Evento cuando se hace doble click en la tabla de datos clientes TableView
+		/**
+		 *  Evento cuando se hace doble click en la tabla de datos clientes TableView 
+		 */
 		TBL_Clientes.setOnMouseClicked(( MouseEvent mouseEvent) ->{
 			if(mouseEvent.getClickCount()==2) {
 				CTL_Accordion.setExpandedPane(PANE_FichaCliente);
@@ -328,14 +358,18 @@ public class FormMainControler implements Initializable {
 				esNuevoRegistro = false;
 				editando=true;
 			}
-		});		
-		//Evento Click en el tabview de listado general
+		});
+		/**
+		 *  Evento Click en el tabview de listado general 
+		 */
 		PANE_ListadoGeneral.setOnMouseClicked((MouseEvent mouseEvent) ->{
 			esNuevoRegistro = true;
 			editando=false;
 			AuxTabClient.borrarCamposFormularioCliente(this);
 		});		
-		//Evento click en el panel de ficha de cliente del tabview
+		/**
+		 *  Evento click en el panel de ficha de cliente del tabview 
+		 */
 		PANE_FichaCliente.setOnMouseClicked((MouseEvent mouseEvent) ->{
 			if(!editando) {
 				AuxTabClient.borrarCamposFormularioCliente(this);
@@ -343,7 +377,9 @@ public class FormMainControler implements Initializable {
 				editando=true;
 			}		
 		});	
-		//Evento de pulsar tecla en el campo de texto de filtrar
+		/**
+		 *  Evento de pulsar tecla en el campo de texto de filtrar
+		 */
 		TXT_FiltroCliente.setOnKeyReleased((KeyEvent keyEvent) ->{
 			comunidad="";
             CHK_Filtro.setSelected(false);
@@ -354,21 +390,36 @@ public class FormMainControler implements Initializable {
 			}else
 				AuxTabClient.llenarTabViewClientes(this, sqlClientes.getClientes(), comunidad);
 		});
-		//Evento para controlar en que pestaña del control Tab estamos
+		
+		/**
+		 **  Evento control TabView (clientes, productos, pedidos) 
+		 */
 		TAB_ControlTabulador.setOnMouseClicked((MouseEvent event) ->{
-			if(TAB_Clientes.isSelected()) {
+			if(TAB_Clientes.isSelected()) { //Seleccionado Tab de Clientes
 				tabIndex=0;
-				refrescarGrafico(tabIndex);
+				graficoCircular.get(tabIndex).refresh();
+				TableView_ListadoPedidos.setVisible(false);
+				comunidad="";
+				AuxTabClient.llenarTabViewClientes(this, sqlClientes.getClientes(), comunidad);
 			}
-			else if(this.TAB_Productos.isSelected()) {
+			else if(this.TAB_Productos.isSelected()) { // Seleccionado Tab de Productos
 				tabIndex=1;
-				refrescarGrafico(tabIndex);
-			}else if(this.TAB_pedidos.isSelected()) {
+				graficoCircular.get(tabIndex).refresh();
+				TableView_ListadoPedidos.setVisible(false);
+				CHK_Filtro.setVisible(false);
+
+			}else if(this.TAB_pedidos.isSelected()) { // Seleccionar Tab de Pedidos
+				CHK_Filtro.setVisible(false);
+				TableView_ListadoPedidos.setVisible(true);
 				AuxTabPedidos.cargarClientes(this, sqlClientes.getClientes());
 				AuxTabPedidos.cargarProductos(this, sqlProductos.getProductos());
+				AuxTabListadoPedidos.pasarPedidoAOrderTemp(orderTemp, sqlOrders.getProductos(), sqlClientes.getClientes(), sqlProductos.getProductos());
+				AuxTabListadoPedidos.cargarPedidos(this, orderTemp);
 			}
 		});
-		//Evento para controlar el click del ration sobre el gráfico
+		/**
+		 *  Evento controlar el click del ratón sobre el gráfico
+		 */
 		charClientes.setOnMouseClicked((MouseEvent event)->{
 			comunidad = graficoCircular.get(tabIndex).getDatoSectorSeleccionado();
 			if(comunidad!=null) {
@@ -377,7 +428,26 @@ public class FormMainControler implements Initializable {
 				CHK_Filtro.setVisible(true);
 				AuxTabClient.llenarTabViewClientes(this, sqlClientes.getClientes(), comunidad);
 			}
-		});			
+		});		
+		/**
+		 *  Evento sobre el boton de nuevo pedido
+		 */
+		BTN_NuevoPedido.setOnMouseClicked((MouseEvent event) -> {
+			if(AuxTabPedidos.comprbarAntesDePedido(this)) {
+				int idCliente = Tableview_ClientesPedidos.getSelectionModel().getSelectedItem().getIdCliente();
+				int idProducto = TableView_ProductosPedidos.getSelectionModel().getSelectedItem().getIdProducto();
+				int cantidad = Integer.parseInt(TXT_CantidadPedido.getText());
+				int auxNumPedido = SerialsId.getNewIdPedido();
+				sqlOrders.newOrder(auxNumPedido, idCliente, idProducto, cantidad);
+				orderTemp.add(new OrderTemp(auxNumPedido,sqlClientes.buscarCliente(idCliente).getNombre(),
+													 	 sqlClientes.buscarCliente(idCliente).getApellidos(), 
+													 	 sqlProductos.buscarProducto(idProducto).getProducto(), 
+													 	 sqlProductos.buscarProducto(idProducto).getDescripcion(), 
+													 	 cantidad));
+				AuxTabListadoPedidos.cargarPedidos(this, orderTemp);
+				AuxTabPedidos.borrarFormulario(this);
+			}
+		});
 	}
 }
 
